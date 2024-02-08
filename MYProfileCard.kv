@@ -1,0 +1,37 @@
+<MYProfileCard>
+    style: 'elevated'
+    md_bg_color: '#ffffff'
+    ripple_behavior: True
+    elevation: 1
+    shadow_softness: 3
+    shadow_offset: 0, -3
+
+    MDRelativeLayout:
+        MDIcon:
+            icon: root.icon
+            theme_text_color: "Custom"
+            text_color: root.icon_color
+            size_hint: None, None
+            pos_hint: {"center_y": .5, "x": .04}
+
+        MDIcon:
+            icon: "chevron-right"
+            size_hint: None, None
+            pos_hint: {'right': .98, 'center_y': .5}
+
+        MDBoxLayout:
+            orientation: 'vertical'
+            size_hint: .9, .8
+            pos_hint: {"x": .14, 'center_y': .5}
+            MDLabel:
+                id: title
+                text: root.text_title
+                font_style: 'Body1'
+                # pos_hint: {"center_y": .66, "x": .17}
+            MDLabel:
+                id: subtitle
+                text: root.text_subtitle
+                theme_text_color: "Custom"
+                text_color: app.colors["Gray2"]
+                font_style: 'Caption'
+                # pos_hint: {"center_y": .33, "x": .17}

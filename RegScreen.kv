@@ -1,0 +1,80 @@
+<RegScreen>:
+    MDLabel:
+        text: 'Create an account'
+        font_style: 'H4'
+        pos_hint: {'top': .94}
+        size_hint: 1, None
+        padding: 20
+    MDLabel:
+        text: 'Complete the sign up process to get started'
+        font_style: 'Subtitle2'
+        theme_text_color: 'Custom'
+        text_color: app.colors["Gray2"]
+        size_hint: 1, None
+        pos_hint: {'top': .88}
+        padding: 20
+    MDTextField:
+        id: username_input
+        size_hint: .9, None
+        height: dp(53)
+        pos_hint: {'center_x': .5, 'y': .67}
+        mode: 'rectangle'
+        hint_text: 'Username'
+    MDTextField:
+        id: email_input
+        size_hint: .9, None
+        height: dp(53)
+        pos_hint: {'center_x': .5, 'y': .56}
+        mode: 'rectangle'
+        error_color: (255, 0, 0)
+        error: False
+        on_text: root.check_email(args[1])
+        hint_text: 'Email'
+    MDTextField:
+        id: password_input
+        size_hint: .9, None
+        height: dp(53)
+        pos_hint: {'center_x': .5, 'y': .45}
+        error_color: (255, 0, 0)
+        mode: 'rectangle'
+        hint_text: 'Password'
+    MDTextField:
+        id: password_confirm_input
+        size_hint: .9, None
+        height: dp(53)
+        pos_hint: {'center_x': .5, 'y': .34}
+        error_color: (255, 0, 0)
+        mode: 'rectangle'
+        hint_text: 'Password confirm'
+    MDLabel:
+        markup: True
+        text: f'[color={app.colors["Gray2"]}]By ticking this box, you are agree to our [color={app.colors["Warning"]}]Terms and conditions and privacy policy[/color]'
+        font_style: 'Subtitle2'
+        halign: 'center'
+        size_hint: .7, .04
+        pos_hint: {'center_x': .5, 'top': .3}
+
+        on_touch_down: root.privacy_label_click(args[0], args[1])
+    MDCheckbox:
+        id: privacy_chkbx
+        size_hint: None, None
+        size: ("48dp", "48dp")
+        pos_hint: {'center_x': .1, 'center_y': .3}
+    MDRaisedButton:
+        text: 'Sign Up'
+        theme_bg_color: 'Custom'
+        md_bg_color: app.colors["Primary"]
+        size_hint: .9, .06
+        pos_hint: {'center_x': .5, 'y': .16}
+
+        on_release: root.reg_btn_click(*args)
+
+    MDLabel:
+        markup: True
+        text: f'[color={app.colors["Gray2"]}]Already have an account? [color={app.colors["Primary"]}]Sign in[/color]'
+        font_style: "Subtitle1"
+        halign: 'center'
+        size_hint: 1, .04
+        pos_hint: {'top': .1}
+
+        on_touch_down: root.back(args[0], args[1])

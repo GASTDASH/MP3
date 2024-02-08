@@ -1,0 +1,26 @@
+<MYProfileCard>
+    style: 'elevated'
+    md_bg_color: '#ffffff'
+    
+    MDRelativeLayout:
+        MDIcon:
+            icon: root.icon
+            icon_color: root.icon_color
+            size_hint: None, None
+            pos_hint: {"center_y": .5, "x": .07}
+
+        MDBoxLayout:
+            orientation: 'vertical'
+            size_hint: .9, .8
+            pos_hint: {"x": .2, 'center_y': .5}
+            MDLabel:
+                id: title
+                text: root.text_title
+                # pos_hint: {"center_y": .66, "x": .17}
+            MDLabel:
+                id: subtitle
+                text: root.text_subtitle
+                text_color: app.colors["Gray2"]
+                font_style: 'Label'
+                role: 'medium'
+                # pos_hint: {"center_y": .33, "x": .17}

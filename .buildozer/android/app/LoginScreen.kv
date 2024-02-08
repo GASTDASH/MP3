@@ -1,0 +1,85 @@
+<LoginScreen>:
+    MDLabel:
+        text: 'Welcome back'
+        font_style: 'Title'
+        pos_hint: {'top': .88}
+        size_hint: 1, None
+        padding: 20
+    MDLabel:
+        text: 'Fill in your email/username and password to continue'
+        font_style: 'Body'
+        theme_text_color: 'Custom'
+        text_color: app.colors["Gray2"]
+        size_hint: 1, None
+        pos_hint: {'top': .81}
+        padding: 20
+    MDTextField:
+        id: username_input
+        size_hint: .9, .1
+        pos_hint: {'center_x': .5, 'y': .56}
+        mode: 'outlined'
+        MDTextFieldHintText:
+            text: 'Username / Email'
+    MDTextField:
+        id: password_input
+        password: True
+        password_mask: '*'
+        size_hint: .9, .1
+        pos_hint: {'center_x': .5, 'y': .45}
+        mode: 'outlined'
+        MDTextFieldHintText:
+            text: 'Password'
+    MDIconButton:
+        id: eye
+        icon: 'eye-off-outline'
+        size_hint: None, None
+        size: '48dp', '48dp'
+        pos_hint: {'center_x': .87, 'center_y': .49}
+
+        on_release: root.show_password()
+    # MDExtendedFabButton:
+    #     size_hint: .7, .08
+    #     pos_hint: {'center_x': .5, 'y': .3}
+    #     MDExtendedFabButtonText:
+    #         text: 'Log In'    
+    MDButton:
+        style: 'elevated'
+        theme_width: 'Custom'
+        theme_bg_color: 'Custom'
+        md_bg_color: app.colors["Primary"]
+        height: "56dp"
+        size_hint: .7, .08
+        pos_hint: {'center_x': .5, 'y': .3}
+
+        on_release: root.login_btn_click()
+
+        MDButtonText:
+            text: 'Log In'
+            theme_text_color: 'Custom'
+            text_color: 'ffffff'
+            pos_hint: {'center_x': .5, 'center_y': .5}
+    MDButton:
+        style: 'outlined'
+        theme_width: 'Custom'
+        theme_line_color: 'Custom'
+        line_color: app.colors["Primary"]
+        height: '56dp'
+        size_hint: .3, .06
+        pos_hint: {'center_x': .5, 'y': .19}
+
+        on_release: root.registration_btn_click()    
+
+        MDButtonText:
+            text: 'No account?'
+            theme_text_color: 'Custom'
+            text_color: app.colors["Primary"]
+            pos_hint: {'center_x': .5, 'center_y': .5}
+    MDButton:
+        style: 'text'
+        pos_hint: {'center_x': .5, 'y': .04}
+
+        MDButtonText:
+            text: 'Forgot password' 
+            theme_text_color: 'Custom'
+            text_color: app.colors["Primary"]
+            pos_hint: {'center_x': .5, 'center_y': .5}

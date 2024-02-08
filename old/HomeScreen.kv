@@ -1,0 +1,114 @@
+<BaseMDNavigationItem>
+
+    MDNavigationItemIcon:
+        icon: root.icon
+
+    MDNavigationItemLabel:
+        text: root.text
+
+<HomeScreen>:
+    MDNavigationBar:
+        on_switch_tabs: root.on_switch_tabs(*args)
+
+        BaseMDNavigationItem:
+            icon: "home"
+            text: "Home"
+            active: True
+
+        BaseMDNavigationItem:
+            icon: "wallet"
+            text: "Wallet"
+
+        BaseMDNavigationItem:
+            icon: "car"
+            text: "Track"
+
+        BaseMDNavigationItem:
+            icon: "account-circle"
+            text: "Profile"
+    MDScreenManager:
+        id: sm
+
+        MDScreen:
+            name: "Home"
+            MDLabel:
+                text: "It's a home screen"
+
+        MDScreen:
+            name: "Wallet"
+            MDLabel:
+                text: "It's a wallet screen"
+
+        MDScreen:
+            name: "Track"
+            MDLabel:
+                text: "It's a track screen"
+
+        MDScreen:
+            name: "Profile"
+            MDTopAppBar:
+                type: "small"
+                pos_hint: {"top": 1}
+                elevation: 2
+                shadow_offset: 0, -10
+                shadow_softness: 4
+
+                MDTopAppBarTitle:
+                    text: "Profile"
+                    pos_hint: {"center_x": .5}
+            MDLabel:
+                id: balance_label
+                font_style: "Title"
+                text: f'Ваш баланс:\n$0'
+                pos_hint: {"center_x": .5, "top": 1}
+                size_hint: .8, .3
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: 10
+                spacing: 15
+                size_hint: 1, .68
+                pos_hint: {'top': .8}
+                MYProfileCard:
+                    id: edit_profile
+                    icon: 'account-circle-outline'
+                    icon_color: '#000000'
+                    text_title: 'Edit profile'
+                    text_subtitle: 'Name, phone no, address, email ...'
+                MYProfileCard:
+                    id: statements
+                    icon: 'certificate-outline'
+                    icon_color: '#000000'
+                    text_title: 'Statements & Reports'
+                    text_subtitle: 'Download transaction details, orders, deliveries'
+                MYProfileCard:
+                    id: notification
+                    icon: 'bell-cog'
+                    icon_color: '#000000'
+                    text_title: 'Notification Settings'
+                    text_subtitle: 'Mute, unmute, set location & tracking setting'
+                MYProfileCard:
+                    id: card_bank_acc_settings
+                    icon: 'credit-card-outline'
+                    icon_color: '#000000'
+                    text_title: 'Card & Bank account settings'
+                    text_subtitle: 'Change cards, delete card details'
+                MYProfileCard:
+                    id: ref
+                    icon: 'account-group-outline'
+                    icon_color: '#000000'
+                    text_title: 'Referrals'
+                    text_subtitle: 'Check no of friends and earn'
+                MYProfileCard:
+                    id: about
+                    icon: 'map-outline'
+                    icon_color: '#000000'
+                    text_title: 'About Us'
+                    text_subtitle: 'Know more about us, terms and conditions'
+                MYProfileCard:
+                    id: logout
+                    icon: 'exit-to-app'
+                    icon_color: app.colors["Error"]
+                    text_title: 'Log Out'
+                    
+                
+            

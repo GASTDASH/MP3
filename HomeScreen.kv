@@ -1,0 +1,136 @@
+<HomeScreen>:
+    MDBottomNavigation:
+        id: navigator
+        panel_color: "#ffffff"
+        pos_hint: {'bottom': 0}
+
+        MDBottomNavigationItem:
+            name: "home"
+            text: "Home"
+            icon: "home"
+
+            MDLabel:
+                text: "It's a Home screen"
+
+            MYSearchTextField:
+                hint_text: "Search services"
+
+        MDBottomNavigationItem:
+            name: "wallet"
+            text: "Wallet"
+            icon: "wallet"
+
+            MDLabel:
+                text: "It's a Wallet screen"
+
+        MDBottomNavigationItem:
+            name: "track"
+            text: "Track"
+            icon: "car-connected"
+
+            MDLabel:
+                text: "It's a Track screen"
+
+        MDBottomNavigationItem:
+            id: profile
+            name: "profile"
+            text: "Profile"
+            icon: "account-circle"  
+
+            on_tab_press: root.on_open(*args)
+
+            MYTopBar:
+                title: "Profile"
+                back: False
+
+            MDCard:
+                size_hint: None, None
+                size: dp(50), dp(50)
+                md_bg_color: "#000000"
+                radius: [dp(50), ]
+                pos_hint: {"center_x": .12, 'center_y': .86}
+            FitImage:
+                id: avatar
+                size_hint: None, None
+                size: dp(48), dp(48)
+                md_bg_color: "#000000"
+                radius: [dp(48), ]
+                pos_hint: {"center_x": .12, 'center_y': .86}
+
+            MDBoxLayout:
+                orientation: 'vertical'
+                size_hint: .8, None
+                size: 0, dp(40)
+                pos_hint: {"x": .22, 'center_y': .86}
+
+                MDLabel:
+                    id: username_label
+                    font_style: "Subtitle1"
+                    text: "{username}"
+                    # pos_hint: {'center_x': .5,'center_y': 1}
+
+                MDLabel:
+                    id: balance_label
+                    font_style: "Caption"
+                    markup: True
+                    text: "Ваш баланс: $"
+                    # pos_hint: {"center_x": .5, "top": 1}
+                    # size_hint: .8, .3
+
+            MDIconButton:
+                pos_hint: {'right': .95, 'center_y': .86}
+                icon: "eye-off-outline"
+
+                on_release: root.hide_balance(*args)
+
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: 10
+                spacing: 15
+                size_hint: 1, .8
+                pos_hint: {'top': .8}
+                MYProfileCard:
+                    id: edit_profile
+                    icon: 'account-circle-outline'
+                    icon_color: '#000000'
+                    text_title: 'Edit profile'
+                    text_subtitle: 'Name, phone no, address, email ...'
+                MYProfileCard:
+                    id: statements
+                    icon: 'certificate-outline'
+                    icon_color: '#000000'
+                    text_title: 'Statements & Reports'
+                    text_subtitle: 'Download transaction details, orders, deliveries'
+                MYProfileCard:
+                    id: notification
+                    icon: 'bell-cog'
+                    icon_color: '#000000'
+                    text_title: 'Notification Settings'
+                    text_subtitle: 'Mute, unmute, set location & tracking setting'
+                MYProfileCard:
+                    id: card_bank_acc_settings
+                    icon: 'credit-card-outline'
+                    icon_color: '#000000'
+                    text_title: 'Card & Bank account settings'
+                    text_subtitle: 'Change cards, delete card details'
+                    on_release:
+                        root.manager.current = 'add_payment_method'
+                MYProfileCard:
+                    id: ref
+                    icon: 'account-group-outline'
+                    icon_color: '#000000'
+                    text_title: 'Referrals'
+                    text_subtitle: 'Check no of friends and earn'
+                MYProfileCard:
+                    id: about
+                    icon: 'map-outline'
+                    icon_color: '#000000'
+                    text_title: 'About Us'
+                    text_subtitle: 'Know more about us, terms and conditions'
+                MYProfileCard:
+                    id: logout
+                    icon: 'exit-to-app'
+                    icon_color: app.colors["Error"]
+                    text_title: 'Log Out'
+
+                    on_release: root.logout(*args)

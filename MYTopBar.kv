@@ -1,0 +1,33 @@
+<MYTopBar>
+    style: 'elevated'
+    md_bg_color: '#ffffff'
+    elevation: 1
+    shadow_softness: 3
+    shadow_offset: 0, -3
+    size_hint: 1.2, None
+    size: 0, dp(40)
+    pos_hint: {'center_x': .5, 'top': 1}
+
+    on_kv_post:
+        if not root.back: \
+        self.ids.layout.remove_widget(self.ids.back_btn); \
+        print("[G_DEBUG] MYTopBar's back_btn has been removed")
+
+    MDRelativeLayout:
+        id: layout
+        MDLabel:
+            text: root.title
+            font_style: "Subtitle1"
+            size_hint: 1, .1
+            halign: "center"
+            pos_hint: {"y": .4}
+            theme_text_color: "Custom"
+            text_color: app.colors["Gray2"]
+        MDIconButton:
+            id: back_btn
+            icon: 'chevron-left-box-outline'
+            size_hint: None, None
+            size: dp(20), dp(20)
+            theme_text_color: "Custom"
+            text_color: app.colors["Primary"]
+            pos_hint: {"x": .08, "center_y": .5}
