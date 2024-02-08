@@ -2,7 +2,7 @@ from kivy.app import App
 from kivymd.app import MDApp
 
 from kivy.lang.builder import Builder
-from kivy.properties import *
+from kivy.properties import StringProperty, ColorProperty, BooleanProperty
 from kivymd.uix.behaviors import CommonElevationBehavior
 
 from kivy.uix.floatlayout import FloatLayout
@@ -44,26 +44,15 @@ import time
 from captcha.audio import AudioCaptcha
 from captcha.image import ImageCaptcha
 
-# from google_recaptcha import ReCaptcha
-# from flask import Flask
+import io
 
-
-
-
-
-
-
-
-
-
-# app = Flask(__name__)
-# recaptcha = ReCaptcha(app)
 
 conn = sqlite3.connect('tunec.db')
 cur = conn.cursor()
 account_id = None
 balance = float(0)
 dark_mode = False
+
 
 class MYProfileCard(MDCard):
     text_title = StringProperty()
@@ -74,6 +63,7 @@ class MYProfileCard(MDCard):
     def __init__(self, **kw):
         super(MYProfileCard, self).__init__(**kw)
 
+
 class MYTopBar(MDCard):
     title = StringProperty()
     back = BooleanProperty()
@@ -81,11 +71,13 @@ class MYTopBar(MDCard):
     def __init__(self, **kw):
         super(MYTopBar, self).__init__(**kw)
 
+
 class MYSearchTextField(MDCard):
     hint_text = StringProperty()
 
     def __init__(self, **kw):
         super(MYSearchTextField, self).__init__(**kw)
+
 
 class LoginScreen(MDScreen):
     def __init__(self, **kw):
@@ -146,14 +138,6 @@ class LoginScreen(MDScreen):
 
     def forgot_password_btn_click(self, instance):
         self.manager.current = 'forgot_password'
-        
-
-
-
-
-
-
-
 
 
 class RegScreen(MDScreen):
@@ -250,19 +234,6 @@ class RegScreen(MDScreen):
             self.password_confirm_input.error = True
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 class HomeScreen(MDScreen):
     def __init__(self, **kw):
         super(HomeScreen, self).__init__(**kw)
@@ -318,17 +289,6 @@ class HomeScreen(MDScreen):
         self.manager.current = "login"
 
 
-
-
-
-
-
-
-
-
-
-
-
 class AddPaymentMethod_Screen(MDScreen):
     def __init__(self, **kw):
         super(AddPaymentMethod_Screen, self).__init__(**kw)
@@ -337,11 +297,6 @@ class AddPaymentMethod_Screen(MDScreen):
 
     def back(self, *args):
         self.manager.current = 'home'
-
-
-
-
-
 
 
 class ForgotPasswordScreen(MDScreen):
@@ -369,25 +324,6 @@ class ForgotPasswordScreen(MDScreen):
             show_text_dialog("OPT Verification", "Данный адрес эл. почты не зарегистрирован")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class OPTVerificationScreen(MDScreen):
     def __init__(self, **kw):
         super(OPTVerificationScreen, self).__init__(**kw)
@@ -397,23 +333,6 @@ class OPTVerificationScreen(MDScreen):
 
     def back(self):
         self.manager.current = 'forgot_password'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 class NewPasswordScreen(MDScreen):
@@ -435,33 +354,15 @@ class NewPasswordScreen(MDScreen):
         self.manager.current = 'forgot_password'
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class PrivacyScreen(MDScreen):
     def __init__(self, **kw):
         super(PrivacyScreen, self).__init__(**kw)
 
-        privacy_text = str()
-        with open('./privacy.ini', 'r') as file:
+        # privacy_text = str()
+        # with open('./privacy.ini', 'r') as file:
+        #     privacy_text = file.read()
+        with io.open('./privacy.ini', encoding='utf-8') as file:
             privacy_text = file.read()
-
-        # privacy_text = "Hello\nWorld"
 
         self.scrollview = MDScrollView(
             do_scroll_x = False,
@@ -516,17 +417,6 @@ class PrivacyScreen(MDScreen):
         self.manager.current = 'reg'
 
 
-
-
-
-
-
-
-
-
-
-
-
 class Color:
     Primary = "0560fa"
     Secondary = "ec8000"
@@ -540,6 +430,7 @@ class Color:
 
     Gray1 = "cfcfcf"
     Gray2 = "a7a7a7"
+
 
 class MobileApp(MDApp):
     colors = {
@@ -590,25 +481,12 @@ class MobileApp(MDApp):
         sm.add_widget(AddPaymentMethod_Screen(name = 'add_payment_method'))
         return sm
 
-
-
-
-
 def show_text_dialog(title_, text_):
     dialog = MDDialog(
         title = title_,
         text = text_
     )
     dialog.open()
-
-
-
-
-
-
-
-
-
 
 if __name__ == '__main__':
     MobileApp().run()
