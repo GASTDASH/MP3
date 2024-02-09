@@ -46,6 +46,8 @@ from captcha.image import ImageCaptcha
 
 import io
 
+from plyer import notification
+
 
 conn = sqlite3.connect('tunec.db')
 cur = conn.cursor()
@@ -138,6 +140,7 @@ class LoginScreen(MDScreen):
 
     def forgot_password_btn_click(self, instance):
         self.manager.current = 'forgot_password'
+        # notification.notify('Some title', 'Some message text')
 
 
 class RegScreen(MDScreen):
@@ -162,7 +165,11 @@ class RegScreen(MDScreen):
             self.manager.current = 'login'
 
     def reg_btn_click(self, instance):
-        if self.email_error:
+        if self.ids.username_input.text == "":
+            show_text_dialog('Регистрация', 'Вы не ввели имя пользователя!')
+        elif self.ids.email_input.text == "":
+            show_text_dialog('Регистрация', 'Вы не ввели адрес эл. почты!')
+        elif self.email_error:
             show_text_dialog('Регистрация', 'Введён некорректный адрес эл. почты!')
         elif (self.ids.password_input.text != self.ids.password_confirm_input.text):
             show_text_dialog('Регистрация', 'Пароли не совпадают!')
@@ -289,9 +296,9 @@ class HomeScreen(MDScreen):
         self.manager.current = "login"
 
 
-class AddPaymentMethod_Screen(MDScreen):
+class AddPaymentMethodScreen(MDScreen):
     def __init__(self, **kw):
-        super(AddPaymentMethod_Screen, self).__init__(**kw)
+        super(AddPaymentMethodScreen, self).__init__(**kw)
 
         self.ids.topbar.ids.back_btn.bind(on_release = self.back)
 
@@ -313,12 +320,15 @@ class ForgotPasswordScreen(MDScreen):
             
 
     def send_btn_click(self, instance):
-        cur.execute(f"SELECT * FROM accounts WHERE email = \'{self.email_input.text}\'")
-        results = cur.fetchall()
+        cur.execute(f"SELECT account_id FROM accounts WHERE email = \'{self.ids.email_input.text}\'")
+        results = cur.fetchone()
 
         print('[G_DEBUG] \n', results)
         
         if len(results) > 0:
+            global account_id
+            account_id = results[0]
+            print(f"[G_DEBUG] account_id = {account_id}")
             self.manager.current = 'opt_verification'
         else:
             show_text_dialog("OPT Verification", "Данный адрес эл. почты не зарегистрирован")
@@ -339,19 +349,26 @@ class NewPasswordScreen(MDScreen):
     def __init__(self, **kw):
         super(NewPasswordScreen, self).__init__(**kw)
 
-    def change_btn_click(self, instance):
-        pass
+    def change_btn_click(self, *args):
+        if not self.check_password_repeat(args):
+            password = str(self.ids.password_input.text)
+            global account_id
+            cur.execute(f"UPDATE accounts SET password = \'{password}\' WHERE account_id = \'{account_id}\'")
+            conn.commit()
+            self.manager.current = 'home'
 
-    def check_password_repeat(self, instance, password):
-        print('[G_DEBUG] password = ' + password)
+    def check_password_repeat(self, *args):
+        print('[G_DEBUG] password = ' + self.ids.password_input.text)
 
-        if self.password_confirm_input.text == self.password_input.text:
-            self.password_confirm_input.error = False
+        if self.ids.password_confirm_input.text == self.ids.password_input.text:
+            self.ids.password_confirm_input.error = False
+            return False
         else:
-            self.password_confirm_input.error = True
+            self.ids.password_confirm_input.error = True
+            return True
 
-    def back(self):
-        self.manager.current = 'forgot_password'
+    # def back(self):
+    #     self.manager.current = 'forgot_password'
 
 
 class PrivacyScreen(MDScreen):
@@ -468,17 +485,20 @@ class MobileApp(MDApp):
         Builder.load_file('LoginScreen.kv')
         Builder.load_file('HomeScreen.kv')
         Builder.load_file('RegScreen.kv')
-        Builder.load_file('AddPaymentMethod_Screen.kv')
+        Builder.load_file('AddPaymentMethodScreen.kv')
+        Builder.load_file('ForgotPasswordScreen.kv')
+        Builder.load_file('OPTVerificationScreen.kv')
+        Builder.load_file('NewPasswordScreen.kv')
 
         sm = MDScreenManager(transition = FadeTransition())
-        sm.add_widget(HomeScreen(name = 'home'))
         sm.add_widget(LoginScreen(name = 'login'))
         sm.add_widget(RegScreen(name = 'reg'))
+        sm.add_widget(HomeScreen(name = 'home'))
         sm.add_widget(PrivacyScreen(name = 'privacy'))
         sm.add_widget(ForgotPasswordScreen(name = 'forgot_password'))
         sm.add_widget(OPTVerificationScreen(name = 'opt_verification'))
         sm.add_widget(NewPasswordScreen(name = 'new_password'))
-        sm.add_widget(AddPaymentMethod_Screen(name = 'add_payment_method'))
+        sm.add_widget(AddPaymentMethodScreen(name = 'add_payment_method'))
         return sm
 
 def show_text_dialog(title_, text_):
