@@ -15,6 +15,30 @@
             MYSearchTextField:
                 hint_text: "Search services"
 
+            MDGridLayout:
+                cols: 2
+                padding: 20
+                spacing: 20
+                size_hint: 1, .5
+                pos_hint: {'top': .55}
+                
+                MYHomeServiceCard:
+                    text_title: 'Customer Care'
+                    text_subtitle: 'Lalala lalala lalala lalala lalala lalala lalala lalala lalala'
+                    icon: 'face-agent'
+                MYHomeServiceCard:
+                    text_title: 'Send a package'
+                    text_subtitle: 'Lalala lalala lalala lalala lalala lalala lalala lalala lalala'
+                    icon: 'package-variant-closed'
+                MYHomeServiceCard:
+                    text_title: 'Fund your wallet'
+                    text_subtitle: 'Lalala lalala lalala lalala lalala lalala lalala lalala lalala'
+                    icon: 'wallet-bifold'
+                MYHomeServiceCard:
+                    text_title: 'Chats'
+                    text_subtitle: 'Lalala lalala lalala lalala lalala lalala lalala lalala lalala'
+                    icon: 'forum'
+
         MDBottomNavigationItem:
             name: "wallet"
             text: "Wallet"
@@ -77,18 +101,29 @@
                     # pos_hint: {"center_x": .5, "top": 1}
                     # size_hint: .8, .3
 
+
             MDIconButton:
                 pos_hint: {'right': .95, 'center_y': .86}
                 icon: "eye-off-outline"
 
                 on_release: root.hide_balance(*args)
 
+            MDLabel:
+                text: 'Enable dark Mode'
+                font_style: 'Subtitle1'
+                pos_hint: {'center_y': .78, 'x': .05}
+
+            MDSwitch:
+                pos_hint: {'center_y': .78, 'right': .9}
+
+                on_active: root.dark_mode_switch(*args)
+
             MDBoxLayout:
                 orientation: 'vertical'
                 padding: 10
                 spacing: 15
-                size_hint: 1, .8
-                pos_hint: {'top': .8}
+                size_hint: 1, .75
+                pos_hint: {'top': .75}
                 MYProfileCard:
                     id: edit_profile
                     icon: 'account-circle-outline'

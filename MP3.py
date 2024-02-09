@@ -81,6 +81,15 @@ class MYSearchTextField(MDCard):
         super(MYSearchTextField, self).__init__(**kw)
 
 
+class MYHomeServiceCard(MDCard):
+    text_title = StringProperty()
+    text_subtitle = StringProperty()
+    icon = StringProperty()
+
+    def __init__(self, **kw):
+        super(MYHomeServiceCard, self).__init__(**kw)
+
+
 class LoginScreen(MDScreen):
     def __init__(self, **kw):
         super(LoginScreen, self).__init__(**kw)
@@ -481,6 +490,7 @@ class MobileApp(MDApp):
         Builder.load_file('MYProfileCard.kv')
         Builder.load_file('MYTopBar.kv')
         Builder.load_file('MYSearchTextField.kv')
+        Builder.load_file('MYHomeServiceCard.kv')
 
         Builder.load_file('LoginScreen.kv')
         Builder.load_file('HomeScreen.kv')
@@ -491,9 +501,9 @@ class MobileApp(MDApp):
         Builder.load_file('NewPasswordScreen.kv')
 
         sm = MDScreenManager(transition = FadeTransition())
+        sm.add_widget(HomeScreen(name = 'home'))
         sm.add_widget(LoginScreen(name = 'login'))
         sm.add_widget(RegScreen(name = 'reg'))
-        sm.add_widget(HomeScreen(name = 'home'))
         sm.add_widget(PrivacyScreen(name = 'privacy'))
         sm.add_widget(ForgotPasswordScreen(name = 'forgot_password'))
         sm.add_widget(OPTVerificationScreen(name = 'opt_verification'))
