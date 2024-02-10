@@ -282,7 +282,7 @@ class HomeScreen(MDScreen):
         cur.execute(f"SELECT username FROM accounts WHERE account_id = \'{account_id}'")
         result = cur.fetchone()
         if result is not None:
-            self.ids.username_label.text = result[0]
+            self.ids.username_label.text = f"Hello {result[0]}"
         else:
             self.ids.username_label.text = "Username ERROR"
 
