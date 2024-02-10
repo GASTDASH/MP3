@@ -89,6 +89,19 @@ class MYHomeServiceCard(MDCard):
     def __init__(self, **kw):
         super(MYHomeServiceCard, self).__init__(**kw)
 
+    def touch_down(self, w, touch):
+        if w.collide_point(*touch.pos):
+            self.md_bg_color = Color.Primary
+            self.ids.title.text_color = "#ffffff"
+            self.ids.subtitle.text_color = "#ffffff"
+            self.ids.icon.text_color = "#ffffff"
+
+    def touch_up(self, *args):
+        self.md_bg_color = "#f2f2f2"
+        self.ids.title.text_color = Color.Primary
+        self.ids.subtitle.text_color = "#000000"
+        self.ids.icon.text_color = Color.Primary
+
 
 class LoginScreen(MDScreen):
     def __init__(self, **kw):

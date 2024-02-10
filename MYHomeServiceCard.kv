@@ -6,8 +6,12 @@
     shadow_softness: 3
     shadow_offset: 0, -3
 
+    on_touch_down: root.touch_down(*args)
+    on_touch_up: root.touch_up(*args)
+
     MDRelativeLayout:
         MDIcon:
+            id: icon
             icon: root.icon
             theme_text_color: "Custom"
             text_color: app.colors["Primary"]
@@ -15,21 +19,28 @@
             font_size: dp(72) 
             pos_hint: {"top": .9, "x": .04}
 
-        MDBoxLayout:
-            orientation: 'vertical'
-            size_hint: 1, .5
-            pos_hint: {'top': .5}
-            MDLabel:
-                id: title
-                text: root.text_title
-                theme_text_color: "Custom"
-                text_color: app.colors["Primary"]
-                font_style: 'Body1'
-                # pos_hint: {"center_y": .66, "x": .17}
-            MDLabel:
-                id: subtitle
-                text: root.text_subtitle
-                theme_text_color: "Custom"
-                text_color: app.colors["Gray2"]
-                font_style: 'Caption'
-                # pos_hint: {"center_y": .33, "x": .17}
+        # MDBoxLayout:
+        #     orientation: 'vertical'
+        #     size_hint: 1, .5
+        #     pos_hint: {'top': .5}
+        MDLabel:
+            id: title
+            text: root.text_title
+            theme_text_color: "Custom"
+            text_color: app.colors["Primary"]
+            font_style: 'Subtitle2'
+            size_hint: 1, None
+            size: 0, 0
+            pos_hint: {"top": .4, "x": .08}
+        MDLabel:
+            id: subtitle
+            text: root.text_subtitle
+            theme_text_color: "Custom"
+            text_color: "#000000"
+            font_style: 'Caption'
+            font_size: dp(8) 
+            size_hint: .9, None
+            size: 0, 0
+            valign: 'top'
+            pos_hint: {"x": .08}
+            y: root.ids.title.y - 25
