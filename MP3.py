@@ -55,7 +55,6 @@ account_id = None
 balance = float(0)
 dark_mode = False
 
-
 class MYProfileCard(MDCard):
     text_title = StringProperty()
     text_subtitle = StringProperty()
@@ -484,6 +483,9 @@ class MobileApp(MDApp):
             "Gray1": "#cfcfcf",
             "Gray2": "#a7a7a7"
         }
+
+    username = "{username}"   
+    avatar_source = './assets/avatar.png'
 
     def build(self):
         Window.size = (360, 800)

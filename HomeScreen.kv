@@ -34,7 +34,7 @@
                         md_bg_color: "#000000"
                         radius: [dp(48), ]
                         pos_hint: {"center_x": .11, 'center_y': .5}
-                        source: './assets/avatar.png'
+                        source: app.avatar_source
                     MDBoxLayout:
                         orientation: 'vertical'
                         size_hint: .8, None
@@ -42,12 +42,12 @@
                         pos_hint: {"x": .23, 'center_y': .5}
 
                         MDLabel:
-                            text: 'Hello {username}!'
+                            text: f'Hello {app.username}!'
                             font_style: "H5"
                             theme_text_color: "Custom"
                             text_color: "#ffffff"
                         MDLabel:
-                            text: 'Hello {username}!'
+                            text: f'Hello {app.username}!'
                             font_style: "Body2"
                             theme_text_color: "Custom"
                             text_color: "#ffffff"
@@ -117,7 +117,7 @@
                 md_bg_color: "#000000"
                 radius: [dp(48), ]
                 pos_hint: {"center_x": .12, 'center_y': .86}
-                source: './assets/avatar.png'
+                source: app.avatar_source
 
             MDBoxLayout:
                 orientation: 'vertical'
@@ -128,7 +128,7 @@
                 MDLabel:
                     id: username_label
                     font_style: "Subtitle1"
-                    text: "Hello {username}"
+                    text: f'Hello {app.username}'
                     # pos_hint: {'center_x': .5,'center_y': 1}
 
                 MDLabel:

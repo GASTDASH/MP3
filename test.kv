@@ -1,0 +1,23 @@
+MDScreen:
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDLabel:
+            text: 'My Test App'
+            halign: 'center'
+        MDLabel:
+            text: f'username = {app.username}'
+            halign: 'center'
+        MDIconButton:
+            md_bg_color: app.colors["Primary"]
+            icon: "printer"
+            theme_text_color: "Custom"
+            text_color: "#ffffff"
+
+            on_release: app.print_UN(*args)
+        MDIconButton:
+            md_bg_color: app.colors["Primary"]
+            icon: "file-edit"
+            theme_text_color: "Custom"
+            text_color: "#ffffff"
+
+            on_release: app.change_UN(*args)
