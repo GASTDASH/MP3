@@ -4,6 +4,8 @@
         panel_color: "#ffffff"
         pos_hint: {'bottom': 0}
 
+        on_switch_tabs: root.on_open(*args)
+
         MDBottomNavigationItem:
             name: "home"
             text: "Home"
@@ -37,18 +39,21 @@
                         source: app.avatar_source
                     MDBoxLayout:
                         orientation: 'vertical'
+                        spacing: 10
                         size_hint: .8, None
                         size: 0, dp(40)
                         pos_hint: {"x": .23, 'center_y': .5}
 
                         MDLabel:
+                            id: home_username_label
                             text: f'Hello {app.username}!'
-                            font_style: "H5"
+                            font_style: "H3"
+                            font_size: dp(24)
                             theme_text_color: "Custom"
                             text_color: "#ffffff"
                         MDLabel:
-                            text: f'Hello {app.username}!'
-                            font_style: "Body2"
+                            text: f'We trust you are having a great time'
+                            font_style: "Caption"
                             theme_text_color: "Custom"
                             text_color: "#ffffff"
 
@@ -98,7 +103,7 @@
             text: "Profile"
             icon: "account-circle"  
 
-            on_tab_press: root.on_open(*args)
+            # on_tab_press: root.on_open(*args)
 
             MYTopBar:
                 title: "Profile"
@@ -126,7 +131,7 @@
                 pos_hint: {"x": .22, 'center_y': .86}
 
                 MDLabel:
-                    id: username_label
+                    id: profile_username_label
                     font_style: "Subtitle1"
                     text: f'Hello {app.username}'
                     # pos_hint: {'center_x': .5,'center_y': 1}

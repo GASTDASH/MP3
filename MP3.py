@@ -139,6 +139,11 @@ class LoginScreen(MDScreen):
             self.ids.password_input.text = ''
 
             #MobileApp.show_text_dialog('Авторизация', 'Вы успешно вошли в аккаунт')
+            cur.execute(f"SELECT username FROM accounts WHERE account_id = \'{account_id}'")
+            result = cur.fetchone()
+            if result is not None:
+                MobileApp.username = result[0]
+            self.manager.get_screen("home").on_open(self.manager.get_screen("home"))
             self.manager.current = 'home'
         else:
             show_text_dialog('Авторизация', 'Неправильный логин или пароль')
@@ -278,12 +283,8 @@ class HomeScreen(MDScreen):
         self.ids.avatar.source = './assets/avatar.png'
     
     def update_username(self, *args):
-        cur.execute(f"SELECT username FROM accounts WHERE account_id = \'{account_id}'")
-        result = cur.fetchone()
-        if result is not None:
-            self.ids.username_label.text = f"Hello {result[0]}"
-        else:
-            self.ids.username_label.text = "Username ERROR"
+        self.ids.home_username_label.text = f"Hello {MobileApp.username}"
+        self.ids.profile_username_label.text = f"Hello {MobileApp.username}"
 
     def update_balance(self, *args):
         cur.execute(f"SELECT balance FROM accounts WHERE account_id = \'{account_id}\'")
