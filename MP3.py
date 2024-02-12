@@ -1,29 +1,25 @@
+import io
+import sqlite3
+from supabase import create_client, Client
+from plyer import notification
+
 from kivy.app import App
 from kivymd.app import MDApp
-
 from kivy.lang.builder import Builder
+from kivy.core.window import Window
+
 from kivy.properties import StringProperty, ColorProperty, BooleanProperty
-from kivymd.uix.behaviors import CommonElevationBehavior
 
-from kivy.uix.floatlayout import FloatLayout
-from kivymd.uix.stacklayout import MDStackLayout
 from kivymd.uix.gridlayout import MDGridLayout
-from kivymd.uix.relativelayout import MDRelativeLayout
 
-from kivy.uix.textinput import TextInput
-from kivymd.uix.textfield import MDTextField
-
-from kivy.uix.button import Button
-from kivymd.uix.button import MDRectangleFlatButton, MDRaisedButton, MDTextButton, MDFloatingActionButton, MDIconButton
-
-from kivy.uix.label import Label
-from kivymd.uix.label import MDLabel
-
-from kivy.uix.screenmanager import *
 from kivymd.uix.screenmanager import MDScreenManager
 from kivymd.uix.screen import MDScreen
-from kivymd.uix.scrollview import MDScrollView
+from kivy.uix.screenmanager import *
 from kivymd.uix.transition import *
+
+from kivymd.uix.label import MDLabel
+
+from kivymd.uix.scrollview import MDScrollView
 
 from kivymd.uix.card import MDCard
 
@@ -34,27 +30,25 @@ from kivymd.uix.bottomnavigation import *
 from kivy.uix.popup import Popup
 from kivymd.uix.dialog import MDDialog
 
-from kivymd.uix.selectioncontrol import MDCheckbox
 
-from kivy.core.window import Window
+account_id = None # Logged In Account ID
+balance = float(0) # Logged In Account balance
+dark_mode = False # Dark Mode
 
-import sqlite3
-import time
-
-from captcha.audio import AudioCaptcha
-from captcha.image import ImageCaptcha
-
-import io
-
-from plyer import notification
-
-
+# SQLite Connection
 conn = sqlite3.connect('tunec.db')
 cur = conn.cursor()
-account_id = None
-balance = float(0)
-dark_mode = False
 
+# Supabase Connection
+url: str = "https://yuomdsktqooaxwfhvhfn.supabase.co"
+key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl1b21kc2t0cW9vYXh3Zmh2aGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDc3NTg2MjAsImV4cCI6MjAyMzMzNDYyMH0.xf2Ab-A-pC8QukG-EpU1mg7-2ybbV-mjDEVXwPhcaXM"
+supabase: Client = create_client(url, key)
+
+#################
+#   Карточка, использующаяся на экране Profile в качестве кнопок
+#   12.02.2024
+#   By GASTDASH
+#################
 class MYProfileCard(MDCard):
     text_title = StringProperty()
     text_subtitle = StringProperty()
@@ -64,7 +58,11 @@ class MYProfileCard(MDCard):
     def __init__(self, **kw):
         super(MYProfileCard, self).__init__(**kw)
 
-
+#################
+#   Карточка, использующаяся в качестве кнопок ТопБара
+#   12.02.2024
+#   By GASTDASH
+#################
 class MYTopBar(MDCard):
     title = StringProperty()
     back = BooleanProperty()
@@ -72,14 +70,24 @@ class MYTopBar(MDCard):
     def __init__(self, **kw):
         super(MYTopBar, self).__init__(**kw)
 
-
+#################
+#   Карточка, использующаяся в качестве текстового поля поиска
+#   12.02.2024
+#   By GASTDASH
+#################
 class MYSearchTextField(MDCard):
     hint_text = StringProperty()
 
     def __init__(self, **kw):
         super(MYSearchTextField, self).__init__(**kw)
 
-
+#################
+#   Карточка, использующаяся в качестве кнопок выбора сервиса
+#   12.02.2024
+#   By GASTDASH
+#   
+#   touch_down, touch_up - функции для изменения цветов карточки при нажатии и отжатии
+#################
 class MYHomeServiceCard(MDCard):
     text_title = StringProperty()
     text_subtitle = StringProperty()
@@ -101,39 +109,46 @@ class MYHomeServiceCard(MDCard):
         self.ids.subtitle.text_color = "#000000"
         self.ids.icon.text_color = Color.Primary
 
-
+#################
+#   Экран Login
+#   12.02.2024
+#   By GASTDASH
+#################
 class LoginScreen(MDScreen):
     def __init__(self, **kw):
         super(LoginScreen, self).__init__(**kw)
         
     def login_btn_click(self, *args):
-        cur.execute(f"SELECT * FROM accounts WHERE username = \'{self.ids.username_input.text}\' AND password = \'{self.ids.password_input.text}\'")
-        results = cur.fetchall()
+        response = supabase.table('accounts').select("*").eq('username', f"{self.ids.username_input.text}").eq('password', f"{self.ids.password_input.text}").execute().data
+        print("\n\n\n[G_DEBUG--> Supabase] response")
+        print(response)
 
-        cur.execute(f"SELECT * FROM accounts WHERE email = \'{self.ids.username_input.text}\' AND password = \'{self.ids.password_input.text}\'")
-        results_email = cur.fetchall()  
+        response_email = supabase.table('accounts').select("*").eq('email', f"{self.ids.username_input.text}").eq('password', f"{self.ids.password_input.text}").execute().data
+        print("\n\n\n[G_DEBUG--> Supabase] response_email")
+        print(response_email)
 
-        if (len(results_email) > 0):
-            results = results_email
+        if (len(response_email) > 0):
+            response = response_email
 
-        print("[G_DEBUG] ")
-        print(results)
-        if (len(results) > 0 or len(results_email) > 0):
-            print('[G_DEBUG] Authorization successful!')
+        print("\n\n[G_DEBUG] response")
+        print(response)
+
+        if (len(response) > 0 or len(response_email) > 0):
+            print(bcolors.BOLD + bcolors.OKGREEN + '\n\n[G_DEBUG] Authorization successful!' + bcolors.ENDC)
 
             #cur.execute(f"SELECT account_id FROM accounts WHERE email = \'{self.username_input.text}\' AND password = \'{self.password_input.text}\'")
             #account_id = cur.fetchone()
 
             global account_id
-            account_id = results[0][0]
-            print(f"[G_DEBUG] account_id = {account_id}")
+            account_id = response[0]["account_id"]
+            print(f"\n\n[G_DEBUG] account_id = {account_id}")
 
             #cur.execute(f"SELECT balance FROM accounts WHERE account_id = \'{account_id}\'")
             #global balance
             #balance = float(cur.fetchone()[0])
 
             HomeScreen.update_balance(HomeScreen(), args)
-            print(f"[G_DEBUG] balance = {balance}")
+            print(f"\n\n[G_DEBUG] balance = {balance}")
 
             self.ids.username_input.text = ''
             self.ids.password_input.text = ''
@@ -168,7 +183,11 @@ class LoginScreen(MDScreen):
         self.manager.current = 'forgot_password'
         # notification.notify('Some title', 'Some message text')
 
-
+#################
+#   Экран Registration
+#   12.02.2024
+#   By GASTDASH
+#################
 class RegScreen(MDScreen):
     def __init__(self, **kw):
         super(RegScreen, self).__init__(**kw)
@@ -177,10 +196,14 @@ class RegScreen(MDScreen):
 
         # Window.bind(on_keyboard = self.back)
 
-        cur.execute("SELECT * FROM accounts;")
-        result = cur.fetchall()
-        print("[G_DEBUG] ")
-        print(result)
+        # cur.execute("SELECT * FROM accounts;")
+        # result = cur.fetchall()
+        # print("\n\n[G_DEBUG] ")
+        # print(result)
+        
+        response = supabase.table('accounts').select("email").execute()
+        print("\n\n\n[G_DEBUG --> Supabase]")
+        print(response.data)
 
     def privacy_label_click(self, w, touch):
         if w.collide_point(*touch.pos):
@@ -206,7 +229,7 @@ class RegScreen(MDScreen):
         elif not self.ids.privacy_chkbx.active:
             show_text_dialog('Регистрация', 'Вы должны принять наши условия использования и политику конфидециальности!')
         else:
-            print('[G_DEBUG] Registration successful!')
+            print('\n\n[G_DEBUG] Registration successful!')
 
             account = (
                 self.ids.username_input.text,
@@ -229,7 +252,7 @@ class RegScreen(MDScreen):
             self.manager.current = 'login'
 
     def check_email(self, email):
-        print('[G_DEBUG] email = ' + email)
+        print('\n\n[G_DEBUG] email = ' + email)
 
         has_uppercase = False
         for char in email:
@@ -259,14 +282,18 @@ class RegScreen(MDScreen):
         print(self.ids.email_input.error)
 
     def check_password_repeat(self, instance, password):
-        print('[G_DEBUG] password = ' + password)
+        print('\n\n[G_DEBUG] password = ' + password)
 
         if self.password_confirm_input.text == self.password_input.text:
             self.password_confirm_input.error = False
         else:
             self.password_confirm_input.error = True
 
-
+#################
+#   Экран Home
+#   12.02.2024
+#   By GASTDASH
+#################
 class HomeScreen(MDScreen):
     def __init__(self, **kw):
         super(HomeScreen, self).__init__(**kw)
@@ -297,7 +324,7 @@ class HomeScreen(MDScreen):
         else:
             self.balance = 0
         
-        print(f"[G_DEBUG] balance = {self.balance}")
+        print(f"\n\n[G_DEBUG] balance = {self.balance}")
         if self.hide_balance_bool:
             self.ids.balance_label.text = f"Ваш баланс: *****"
         else:
@@ -311,13 +338,17 @@ class HomeScreen(MDScreen):
     def dark_mode_switch(self, *args):
         global dark_mode
         dark_mode = not dark_mode
-        print(f"[G_DEBUG] Now dark_mode is {dark_mode}")
+        print(f"\n\n[G_DEBUG] Now dark_mode is {dark_mode}")
 
     def logout(self, *args):
         self.ids.navigator.switch_tab("home")
         self.manager.current = "login"
 
-
+#################
+#   Экран Add Payment Method
+#   12.02.2024
+#   By GASTDASH
+#################
 class AddPaymentMethodScreen(MDScreen):
     def __init__(self, **kw):
         super(AddPaymentMethodScreen, self).__init__(**kw)
@@ -327,7 +358,11 @@ class AddPaymentMethodScreen(MDScreen):
     def back(self, *args):
         self.manager.current = 'home'
 
-
+#################
+#   Экран Forgot Password
+#   12.02.2024
+#   By GASTDASH
+#################
 class ForgotPasswordScreen(MDScreen):
     def __init__(self, **kw):
         super(ForgotPasswordScreen, self).__init__(**kw)
@@ -345,17 +380,21 @@ class ForgotPasswordScreen(MDScreen):
         cur.execute(f"SELECT account_id FROM accounts WHERE email = \'{self.ids.email_input.text}\'")
         results = cur.fetchone()
 
-        print('[G_DEBUG] \n', results)
+        print('\n\n[G_DEBUG] \n', results)
         
         if len(results) > 0:
             global account_id
             account_id = results[0]
-            print(f"[G_DEBUG] account_id = {account_id}")
+            print(f"\n\n[G_DEBUG] account_id = {account_id}")
             self.manager.current = 'opt_verification'
         else:
             show_text_dialog("OPT Verification", "Данный адрес эл. почты не зарегистрирован")
 
-
+#################
+#   Экран OPT Verification
+#   12.02.2024
+#   By GASTDASH
+#################
 class OPTVerificationScreen(MDScreen):
     def __init__(self, **kw):
         super(OPTVerificationScreen, self).__init__(**kw)
@@ -366,7 +405,11 @@ class OPTVerificationScreen(MDScreen):
     def back(self):
         self.manager.current = 'forgot_password'
 
-
+#################
+#   Экран New Password
+#   12.02.2024
+#   By GASTDASH
+#################
 class NewPasswordScreen(MDScreen):
     def __init__(self, **kw):
         super(NewPasswordScreen, self).__init__(**kw)
@@ -380,7 +423,7 @@ class NewPasswordScreen(MDScreen):
             self.manager.current = 'home'
 
     def check_password_repeat(self, *args):
-        print('[G_DEBUG] password = ' + self.ids.password_input.text)
+        print('\n\n[G_DEBUG] password = ' + self.ids.password_input.text)
 
         if self.ids.password_confirm_input.text == self.ids.password_input.text:
             self.ids.password_confirm_input.error = False
@@ -389,10 +432,11 @@ class NewPasswordScreen(MDScreen):
             self.ids.password_confirm_input.error = True
             return True
 
-    # def back(self):
-    #     self.manager.current = 'forgot_password'
-
-
+#################
+#   Экран Privacy
+#   12.02.2024
+#   By GASTDASH
+#################
 class PrivacyScreen(MDScreen):
     def __init__(self, **kw):
         super(PrivacyScreen, self).__init__(**kw)
@@ -456,6 +500,19 @@ class PrivacyScreen(MDScreen):
         self.manager.current = 'reg'
 
 
+# Цвета для терминала
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+# Цвета для виджетов
 class Color:
     Primary = "0560fa"
     Secondary = "ec8000"
@@ -471,6 +528,7 @@ class Color:
     Gray2 = "a7a7a7"
 
 
+# Главный класс приложения
 class MobileApp(MDApp):
     colors = {
             "Primary": "#0560fa",
@@ -527,6 +585,7 @@ class MobileApp(MDApp):
         sm.add_widget(AddPaymentMethodScreen(name = 'add_payment_method'))
         return sm
 
+# Отображение простого диалогового окна
 def show_text_dialog(title_, text_):
     dialog = MDDialog(
         title = title_,
