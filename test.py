@@ -1,5 +1,6 @@
 from kivy.lang.builder import Builder
 from kivymd.app import MDApp
+import hashlib
 
 class MobileApp(MDApp):
     colors = {
@@ -15,16 +16,11 @@ class MobileApp(MDApp):
             "Gray2": "#a7a7a7"
         }
 
-    username = "{username}"   
-
     def build(self):
         return Builder.load_file('test.kv')
     
-    def print_UN(self, *args):
-        print(MobileApp.username)
-
-    def change_UN(self, *args):
-        MobileApp.username = "GASTDASH"
+    def hash_sha512(self, text):
+        return hashlib.sha512(bytes(text, 'utf-8')).hexdigest()
 
 if __name__ == '__main__':
     MobileApp().run()

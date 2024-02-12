@@ -517,9 +517,9 @@ class MobileApp(MDApp):
         Builder.load_file('NewPasswordScreen.kv')
 
         sm = MDScreenManager(transition = FadeTransition())
-        sm.add_widget(HomeScreen(name = 'home'))
         sm.add_widget(LoginScreen(name = 'login'))
         sm.add_widget(RegScreen(name = 'reg'))
+        sm.add_widget(HomeScreen(name = 'home'))
         sm.add_widget(PrivacyScreen(name = 'privacy'))
         sm.add_widget(ForgotPasswordScreen(name = 'forgot_password'))
         sm.add_widget(OPTVerificationScreen(name = 'opt_verification'))
