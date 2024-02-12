@@ -1,0 +1,23 @@
+MDScreen:
+    MDBoxLayout:
+        orientation: 'vertical'
+
+        MDTextField:
+            id: pw_input
+            mode: "round"
+
+        MDRaisedButton:
+            text: 'Log In'
+            md_bg_color: app.colors["Warning"]
+
+            on_release:
+                root.ids.pw.text = pw_input.text; \
+                root.ids.pw_hash.text = app.hash_sha512(pw_input.text)
+
+        MDLabel:
+            id: pw
+            text: "pw"
+
+        MDLabel:
+            id: pw_hash
+            text: "pw_hash"

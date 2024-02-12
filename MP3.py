@@ -55,7 +55,6 @@ account_id = None
 balance = float(0)
 dark_mode = False
 
-
 class MYProfileCard(MDCard):
     text_title = StringProperty()
     text_subtitle = StringProperty()
@@ -79,6 +78,28 @@ class MYSearchTextField(MDCard):
 
     def __init__(self, **kw):
         super(MYSearchTextField, self).__init__(**kw)
+
+
+class MYHomeServiceCard(MDCard):
+    text_title = StringProperty()
+    text_subtitle = StringProperty()
+    icon = StringProperty()
+
+    def __init__(self, **kw):
+        super(MYHomeServiceCard, self).__init__(**kw)
+
+    def touch_down(self, w, touch):
+        if w.collide_point(*touch.pos):
+            self.md_bg_color = Color.Primary
+            self.ids.title.text_color = "#ffffff"
+            self.ids.subtitle.text_color = "#ffffff"
+            self.ids.icon.text_color = "#ffffff"
+
+    def touch_up(self, *args):
+        self.md_bg_color = "#f2f2f2"
+        self.ids.title.text_color = Color.Primary
+        self.ids.subtitle.text_color = "#000000"
+        self.ids.icon.text_color = Color.Primary
 
 
 class LoginScreen(MDScreen):
@@ -118,6 +139,11 @@ class LoginScreen(MDScreen):
             self.ids.password_input.text = ''
 
             #MobileApp.show_text_dialog('Авторизация', 'Вы успешно вошли в аккаунт')
+            cur.execute(f"SELECT username FROM accounts WHERE account_id = \'{account_id}'")
+            result = cur.fetchone()
+            if result is not None:
+                MobileApp.username = result[0]
+            self.manager.get_screen("home").on_open(self.manager.get_screen("home"))
             self.manager.current = 'home'
         else:
             show_text_dialog('Авторизация', 'Неправильный логин или пароль')
@@ -257,12 +283,8 @@ class HomeScreen(MDScreen):
         self.ids.avatar.source = './assets/avatar.png'
     
     def update_username(self, *args):
-        cur.execute(f"SELECT username FROM accounts WHERE account_id = \'{account_id}'")
-        result = cur.fetchone()
-        if result is not None:
-            self.ids.username_label.text = result[0]
-        else:
-            self.ids.username_label.text = "Username ERROR"
+        self.ids.home_username_label.text = f"Hello {MobileApp.username}"
+        self.ids.profile_username_label.text = f"Hello {MobileApp.username}"
 
     def update_balance(self, *args):
         cur.execute(f"SELECT balance FROM accounts WHERE account_id = \'{account_id}\'")
@@ -463,6 +485,9 @@ class MobileApp(MDApp):
             "Gray2": "#a7a7a7"
         }
 
+    username = "{username}"   
+    avatar_source = './assets/avatar.png'
+
     def build(self):
         Window.size = (360, 800)
         # Window.size = (600, 800)
@@ -481,6 +506,7 @@ class MobileApp(MDApp):
         Builder.load_file('MYProfileCard.kv')
         Builder.load_file('MYTopBar.kv')
         Builder.load_file('MYSearchTextField.kv')
+        Builder.load_file('MYHomeServiceCard.kv')
 
         Builder.load_file('LoginScreen.kv')
         Builder.load_file('HomeScreen.kv')

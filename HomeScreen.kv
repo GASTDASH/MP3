@@ -4,16 +4,82 @@
         panel_color: "#ffffff"
         pos_hint: {'bottom': 0}
 
+        on_switch_tabs: root.on_open(*args)
+
         MDBottomNavigationItem:
             name: "home"
             text: "Home"
             icon: "home"
 
-            MDLabel:
-                text: "It's a Home screen"
-
             MYSearchTextField:
+                pos_hint: {"top": .95, "center_x": .5}
                 hint_text: "Search services"
+
+            MDCard:
+                style: 'filled'
+                md_bg_color: app.colors["Primary"]
+                size_hint: .9, None
+                size: 0, dp(90)
+                pos_hint: {"top": .85, "center_x": .5}
+                
+                RelativeLayout:
+                    MDCard:
+                        size_hint: None, None
+                        size: dp(50), dp(50)
+                        md_bg_color: "#ffffff"
+                        radius: [dp(50), ]
+                        pos_hint: {"center_x": .11, 'center_y': .5}
+                    FitImage:
+                        id: avatar
+                        size_hint: None, None
+                        size: dp(48), dp(48)
+                        md_bg_color: "#000000"
+                        radius: [dp(48), ]
+                        pos_hint: {"center_x": .11, 'center_y': .5}
+                        source: app.avatar_source
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        spacing: 10
+                        size_hint: .8, None
+                        size: 0, dp(40)
+                        pos_hint: {"x": .23, 'center_y': .5}
+
+                        MDLabel:
+                            id: home_username_label
+                            text: f'Hello {app.username}!'
+                            font_style: "H3"
+                            font_size: dp(24)
+                            theme_text_color: "Custom"
+                            text_color: "#ffffff"
+                        MDLabel:
+                            text: f'We trust you are having a great time'
+                            font_style: "Caption"
+                            theme_text_color: "Custom"
+                            text_color: "#ffffff"
+
+            MDGridLayout:
+                cols: 2
+                padding: 20
+                spacing: 20
+                size_hint: 1, .5
+                pos_hint: {'top': .55}
+                
+                MYHomeServiceCard:
+                    text_title: 'Customer Care'
+                    text_subtitle: 'Our customer care service line is available from 8-9pm week days and 9 - 5 weekends - tap to call us today'
+                    icon: 'face-agent'
+                MYHomeServiceCard:
+                    text_title: 'Send a package'
+                    text_subtitle: 'Request for a driver to pick up or deliver your package for you'
+                    icon: 'package-variant-closed'
+                MYHomeServiceCard:
+                    text_title: 'Fund your wallet'
+                    text_subtitle: 'To fund your wallet is as easy as ABC, make use of our fast technology and top-up your wallet today'
+                    icon: 'wallet-bifold'
+                MYHomeServiceCard:
+                    text_title: 'Chats'
+                    text_subtitle: 'Search for available rider within your area'
+                    icon: 'forum'
 
         MDBottomNavigationItem:
             name: "wallet"
@@ -37,7 +103,7 @@
             text: "Profile"
             icon: "account-circle"  
 
-            on_tab_press: root.on_open(*args)
+            # on_tab_press: root.on_open(*args)
 
             MYTopBar:
                 title: "Profile"
@@ -56,6 +122,7 @@
                 md_bg_color: "#000000"
                 radius: [dp(48), ]
                 pos_hint: {"center_x": .12, 'center_y': .86}
+                source: app.avatar_source
 
             MDBoxLayout:
                 orientation: 'vertical'
@@ -64,9 +131,9 @@
                 pos_hint: {"x": .22, 'center_y': .86}
 
                 MDLabel:
-                    id: username_label
+                    id: profile_username_label
                     font_style: "Subtitle1"
-                    text: "{username}"
+                    text: f'Hello {app.username}'
                     # pos_hint: {'center_x': .5,'center_y': 1}
 
                 MDLabel:
@@ -77,18 +144,29 @@
                     # pos_hint: {"center_x": .5, "top": 1}
                     # size_hint: .8, .3
 
+
             MDIconButton:
                 pos_hint: {'right': .95, 'center_y': .86}
                 icon: "eye-off-outline"
 
                 on_release: root.hide_balance(*args)
 
+            MDLabel:
+                text: 'Enable dark Mode'
+                font_style: 'Subtitle1'
+                pos_hint: {'center_y': .78, 'x': .05}
+
+            MDSwitch:
+                pos_hint: {'center_y': .78, 'right': .9}
+
+                on_active: root.dark_mode_switch(*args)
+
             MDBoxLayout:
                 orientation: 'vertical'
                 padding: 10
                 spacing: 15
-                size_hint: 1, .8
-                pos_hint: {'top': .8}
+                size_hint: 1, .75
+                pos_hint: {'top': .75}
                 MYProfileCard:
                     id: edit_profile
                     icon: 'account-circle-outline'
