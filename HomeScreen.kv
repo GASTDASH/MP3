@@ -4,7 +4,7 @@
         panel_color: "#ffffff"
         pos_hint: {'bottom': 0}
 
-        on_switch_tabs: root.on_open(*args)
+        # on_switch_tabs: root.on_open(*args)
 
         MDBottomNavigationItem:
             name: "home"
@@ -30,7 +30,7 @@
                         radius: [dp(50), ]
                         pos_hint: {"center_x": .11, 'center_y': .5}
                     FitImage:
-                        id: avatar
+                        id: avatar_home
                         size_hint: None, None
                         size: dp(48), dp(48)
                         md_bg_color: "#000000"
@@ -116,7 +116,7 @@
                 radius: [dp(50), ]
                 pos_hint: {"center_x": .12, 'center_y': .86}
             FitImage:
-                id: avatar
+                id: avatar_profile
                 size_hint: None, None
                 size: dp(48), dp(48)
                 md_bg_color: "#000000"

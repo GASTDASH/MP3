@@ -1,23 +1,15 @@
 MDScreen:
-    MDBoxLayout:
-        orientation: 'vertical'
-
-        MDTextField:
-            id: pw_input
-            mode: "round"
-
-        MDRaisedButton:
-            text: 'Log In'
-            md_bg_color: app.colors["Warning"]
-
-            on_release:
-                root.ids.pw.text = pw_input.text; \
-                root.ids.pw_hash.text = app.hash_sha512(pw_input.text)
-
-        MDLabel:
-            id: pw
-            text: "pw"
-
-        MDLabel:
-            id: pw_hash
-            text: "pw_hash"
+    MDCard:
+        size_hint: None, None
+        size: dp(100), dp(100)
+        md_bg_color: "#000000"
+        radius: [dp(100), ]
+        pos_hint: {"center_x": .11, 'center_y': .5}
+    FitImage:
+        id: avatar
+        size_hint: None, None
+        size: dp(95), dp(95)
+        md_bg_color: "#000000"
+        radius: [dp(95), ]
+        pos_hint: {"center_x": .11, 'center_y': .5}
+        source: app.avatar_source

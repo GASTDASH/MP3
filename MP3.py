@@ -2,11 +2,13 @@ import io
 import sqlite3
 from supabase import create_client, Client
 from plyer import notification
+import sys
 
 from kivy.app import App
 from kivymd.app import MDApp
 from kivy.lang.builder import Builder
 from kivy.core.window import Window
+from kivy.loader import Loader
 
 from kivy.properties import StringProperty, ColorProperty, BooleanProperty
 
@@ -41,8 +43,13 @@ cur = conn.cursor()
 
 # Supabase Connection
 url: str = "https://yuomdsktqooaxwfhvhfn.supabase.co"
-key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl1b21kc2t0cW9vYXh3Zmh2aGZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDc3NTg2MjAsImV4cCI6MjAyMzMzNDYyMH0.xf2Ab-A-pC8QukG-EpU1mg7-2ybbV-mjDEVXwPhcaXM"
-supabase: Client = create_client(url, key)
+key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl1b21kc2t0cW9vYXh3Zmh2aGZuIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcwNzc1ODYyMCwiZXhwIjoyMDIzMzM0NjIwfQ.kRfxxaHZ_CBjjZ4yC4LULjV5J5ROybQf1Jz0Hq4z1eI"
+try:
+    supabase: Client = create_client(url, key)
+    test = supabase.table("accounts").select("*").execute()
+except:
+    print(f"\n\n\n\nПИЗДА РУЛЮ!!!! ИНЕТА НЕМА!!!!! НЕ МОГУ ПОДКЛЮЧИТЬСЯ!!!!!!!!!!!!!!")
+    sys.exit()
 
 #################
 #   Карточка, использующаяся на экране Profile в качестве кнопок
@@ -120,11 +127,11 @@ class LoginScreen(MDScreen):
         
     def login_btn_click(self, *args):
         response = supabase.table('accounts').select("*").eq('username', f"{self.ids.username_input.text}").eq('password', f"{self.ids.password_input.text}").execute().data
-        print("\n\n\n[G_DEBUG--> Supabase] response")
+        print("\n\n\n[G_DEBUG --> Supabase] response")
         print(response)
 
         response_email = supabase.table('accounts').select("*").eq('email', f"{self.ids.username_input.text}").eq('password', f"{self.ids.password_input.text}").execute().data
-        print("\n\n\n[G_DEBUG--> Supabase] response_email")
+        print("\n\n\n[G_DEBUG --> Supabase] response_email")
         print(response_email)
 
         if (len(response_email) > 0):
@@ -136,9 +143,6 @@ class LoginScreen(MDScreen):
         if (len(response) > 0 or len(response_email) > 0):
             print(bcolors.BOLD + bcolors.OKGREEN + '\n\n[G_DEBUG] Authorization successful!' + bcolors.ENDC)
 
-            #cur.execute(f"SELECT account_id FROM accounts WHERE email = \'{self.username_input.text}\' AND password = \'{self.password_input.text}\'")
-            #account_id = cur.fetchone()
-
             global account_id
             account_id = response[0]["account_id"]
             print(f"\n\n[G_DEBUG] account_id = {account_id}")
@@ -146,6 +150,11 @@ class LoginScreen(MDScreen):
             #cur.execute(f"SELECT balance FROM accounts WHERE account_id = \'{account_id}\'")
             #global balance
             #balance = float(cur.fetchone()[0])
+            
+            # res = supabase.table("accounts").select("balance").eq("account_id", f"{account_id}").execute().data
+            # global balance
+            # balance = float(res[0]["balance"])
+            # self.manager.get_screen("home").update_balance(self.manager.get_screen("home"))
 
             HomeScreen.update_balance(HomeScreen(), args)
             print(f"\n\n[G_DEBUG] balance = {balance}")
@@ -153,11 +162,9 @@ class LoginScreen(MDScreen):
             self.ids.username_input.text = ''
             self.ids.password_input.text = ''
 
-            #MobileApp.show_text_dialog('Авторизация', 'Вы успешно вошли в аккаунт')
-            cur.execute(f"SELECT username FROM accounts WHERE account_id = \'{account_id}'")
-            result = cur.fetchone()
+            result = supabase.table("accounts").select("username").eq("account_id", f"{account_id}").execute().data
             if result is not None:
-                MobileApp.username = result[0]
+                MobileApp.username = result[0]["username"]
             self.manager.get_screen("home").on_open(self.manager.get_screen("home"))
             self.manager.current = 'home'
         else:
@@ -166,8 +173,6 @@ class LoginScreen(MDScreen):
     def registration_btn_click(self, instance):
         self.manager.current = 'reg'
 
-    # def show_password(self, instance):
-    #     self.password_input.password = not self.password_input.password
     def show_password(self, instance):
         if self.ids.password_input.password:
             self.ids.password_input.password = False
@@ -193,13 +198,6 @@ class RegScreen(MDScreen):
         super(RegScreen, self).__init__(**kw)
 
         self.email_error = False
-
-        # Window.bind(on_keyboard = self.back)
-
-        # cur.execute("SELECT * FROM accounts;")
-        # result = cur.fetchall()
-        # print("\n\n[G_DEBUG] ")
-        # print(result)
         
         response = supabase.table('accounts').select("email").execute()
         print("\n\n\n[G_DEBUG --> Supabase]")
@@ -237,8 +235,10 @@ class RegScreen(MDScreen):
                 self.ids.password_input.text
             )
 
-            cur.execute("INSERT INTO accounts(username, email, password, balance) VALUES(?, ?, ?, 0.0);", account)
-            conn.commit()
+            # cur.execute("INSERT INTO accounts(username, email, password, balance) VALUES(?, ?, ?, 0.0);", account)
+            # conn.commit()
+
+            response = supabase.table("accounts").insert({"username": account[0], "email": account[1], "password": account[2], "balance": 0.0})
 
             show_text_dialog('Регистрация', f'Пользователь {self.ids.username_input.text} был успешно зарегестрирован в системе')
             
@@ -307,22 +307,29 @@ class HomeScreen(MDScreen):
         self.update_username(args)
 
     def update_avatar(self, *args):
-        self.ids.avatar.source = './assets/avatar.png'
+        response = supabase.table("accounts").select("avatar").eq("account_id", f"{account_id}").execute().data
+        if response is not None:
+            if response[0]["avatar"] is not None:
+                self.ids.avatar_home.source = response[0]["avatar"]
+                self.ids.avatar_profile.source = response[0]["avatar"]
+        else:
+            self.ids.avatar.source = './assets/avatar.png'
     
     def update_username(self, *args):
         self.ids.home_username_label.text = f"Hello {MobileApp.username}"
         self.ids.profile_username_label.text = f"Hello {MobileApp.username}"
 
     def update_balance(self, *args):
-        cur.execute(f"SELECT balance FROM accounts WHERE account_id = \'{account_id}\'")
+        # cur.execute(f"SELECT balance FROM accounts WHERE account_id = \'{account_id}\'")
+        # res = cur.fetchone()
+        res = supabase.table("accounts").select("balance").eq("account_id", f"{account_id}").execute().data
         global balance
-        res = cur.fetchone()
         if res is not None:
-            if res[0] is not None:
-                balance = float(res[0])
+            if res[0]["balance"] is not None:
+                balance = float(res[0]["balance"])
                 self.balance = balance
         else:
-            self.balance = 0
+            self.balance = -1
         
         print(f"\n\n[G_DEBUG] balance = {self.balance}")
         if self.hide_balance_bool:
@@ -336,9 +343,13 @@ class HomeScreen(MDScreen):
         self.update_balance(args)
 
     def dark_mode_switch(self, *args):
-        global dark_mode
-        dark_mode = not dark_mode
-        print(f"\n\n[G_DEBUG] Now dark_mode is {dark_mode}")
+        if self.theme_cls.theme_style == "Light":
+            self.theme_cls.theme_style = "Dark"
+            MobileApp.colors = MobileApp.colors_dark
+        else:
+            self.theme_cls.theme_style = "Light"
+            MobileApp.colors = MobileApp.colors_light
+        print(f"\n\n[G_DEBUG] Now theme_cls.theme_style is {self.theme_cls.theme_style}")
 
     def logout(self, *args):
         self.ids.navigator.switch_tab("home")
@@ -377,14 +388,16 @@ class ForgotPasswordScreen(MDScreen):
             
 
     def send_btn_click(self, instance):
-        cur.execute(f"SELECT account_id FROM accounts WHERE email = \'{self.ids.email_input.text}\'")
-        results = cur.fetchone()
+        # cur.execute(f"SELECT account_id FROM accounts WHERE email = \'{self.ids.email_input.text}\'")
+        # results = cur.fetchone()
+
+        results = supabase.table("accounts").select("account_id").eq("email", f"{self.ids.email_input.text}").execute().data
 
         print('\n\n[G_DEBUG] \n', results)
         
         if len(results) > 0:
             global account_id
-            account_id = results[0]
+            account_id = results[0]["account_id"]
             print(f"\n\n[G_DEBUG] account_id = {account_id}")
             self.manager.current = 'opt_verification'
         else:
@@ -530,18 +543,31 @@ class Color:
 
 # Главный класс приложения
 class MobileApp(MDApp):
-    colors = {
-            "Primary": "#0560fa",
-            "Secondary": "e#c8000",
-            "Success": "#35b369",
-            "Warning": "#ebbc2e",
-            "Info": "#2f80ed",
-            "Error": "#ed3a3a",
-            "Text1": "#141414",
-            "Text2": "#3a3a3a",
-            "Gray1": "#cfcfcf",
-            "Gray2": "#a7a7a7"
-        }
+    colors_light = {
+        "Primary": "#0560fa",
+        "Secondary": "#ec8000",
+        "Success": "#35b369",
+        "Warning": "#ebbc2e",
+        "Info": "#2f80ed",
+        "Error": "#ed3a3a",
+        "Text1": "#141414",
+        "Text2": "#3a3a3a",
+        "Gray1": "#cfcfcf",
+        "Gray2": "#a7a7a7"
+    }
+    colors_dark = {
+        "Primary": "#ff0000",
+        "Secondary": "#ec8000",
+        "Success": "#35b369",
+        "Warning": "#ebbc2e",
+        "Info": "#2f80ed",
+        "Error": "#ed3a3a",
+        "Text1": "#141414",
+        "Text2": "#3a3a3a",
+        "Gray1": "#cfcfcf",
+        "Gray2": "#a7a7a7"
+    }
+    colors = colors_light
 
     username = "{username}"   
     avatar_source = './assets/avatar.png'
@@ -550,14 +576,16 @@ class MobileApp(MDApp):
         Window.size = (360, 800)
         # Window.size = (600, 800)
         
-        cur.execute("""CREATE TABLE IF NOT EXISTS accounts(
-                account_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT,
-                email TEXT,
-                password TEXT,
-                balance REAL);
-                """)
-        conn.commit()
+        # cur.execute("""CREATE TABLE IF NOT EXISTS accounts(
+        #         account_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        #         username TEXT,
+        #         email TEXT,
+        #         password TEXT,
+        #         balance REAL);
+        #         """)
+        # conn.commit()
+
+        Loader.loading_image = './assets/loading.gif'
 
         self.theme_cls.material_style = "M2"
 
