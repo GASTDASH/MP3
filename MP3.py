@@ -147,15 +147,6 @@ class LoginScreen(MDScreen):
             account_id = response[0]["account_id"]
             print(f"\n\n[G_DEBUG] account_id = {account_id}")
 
-            #cur.execute(f"SELECT balance FROM accounts WHERE account_id = \'{account_id}\'")
-            #global balance
-            #balance = float(cur.fetchone()[0])
-            
-            # res = supabase.table("accounts").select("balance").eq("account_id", f"{account_id}").execute().data
-            # global balance
-            # balance = float(res[0]["balance"])
-            # self.manager.get_screen("home").update_balance(self.manager.get_screen("home"))
-
             HomeScreen.update_balance(HomeScreen(), args)
             print(f"\n\n[G_DEBUG] balance = {balance}")
 
@@ -186,7 +177,7 @@ class LoginScreen(MDScreen):
 
     def forgot_password_btn_click(self, instance):
         self.manager.current = 'forgot_password'
-        # notification.notify('Some title', 'Some message text')
+        # notification.notify('Some title', 'Some message text').notify('Some title', 'Some message text')
 
 #################
 #   Экран Registration
@@ -234,9 +225,6 @@ class RegScreen(MDScreen):
                 self.ids.email_input.text,
                 self.ids.password_input.text
             )
-
-            # cur.execute("INSERT INTO accounts(username, email, password, balance) VALUES(?, ?, ?, 0.0);", account)
-            # conn.commit()
 
             response = supabase.table("accounts").insert({"username": account[0], "email": account[1], "password": account[2], "balance": 0.0})
 
@@ -310,10 +298,11 @@ class HomeScreen(MDScreen):
         response = supabase.table("accounts").select("avatar").eq("account_id", f"{account_id}").execute().data
         if response is not None:
             if response[0]["avatar"] is not None:
-                self.ids.avatar_home.source = response[0]["avatar"]
-                self.ids.avatar_profile.source = response[0]["avatar"]
+                avatar = response[0]["avatar"]
         else:
-            self.ids.avatar.source = './assets/avatar.png'
+            avatar = './assets/avatar.png'
+        self.ids.avatar_home.source = avatar
+        self.ids.avatar_profile.source = avatar
     
     def update_username(self, *args):
         self.ids.home_username_label.text = f"Hello {MobileApp.username}"
@@ -379,18 +368,11 @@ class ForgotPasswordScreen(MDScreen):
         super(ForgotPasswordScreen, self).__init__(**kw)
 
     def back(self, w, touch):
-        # print(touch.pos)
-        # self.do_layout()
-        # print(self.back_label.size)
-        # print(self.back_label.pos)
         if w.collide_point(*touch.pos):
             self.manager.current = 'login'
             
 
     def send_btn_click(self, instance):
-        # cur.execute(f"SELECT account_id FROM accounts WHERE email = \'{self.ids.email_input.text}\'")
-        # results = cur.fetchone()
-
         results = supabase.table("accounts").select("account_id").eq("email", f"{self.ids.email_input.text}").execute().data
 
         print('\n\n[G_DEBUG] \n', results)
@@ -454,9 +436,6 @@ class PrivacyScreen(MDScreen):
     def __init__(self, **kw):
         super(PrivacyScreen, self).__init__(**kw)
 
-        # privacy_text = str()
-        # with open('./privacy.ini', 'r') as file:
-        #     privacy_text = file.read()
         with io.open('./privacy.ini', encoding='utf-8') as file:
             privacy_text = file.read()
 
@@ -468,23 +447,9 @@ class PrivacyScreen(MDScreen):
         )
         self.add_widget(self.scrollview)
 
-        # self.privacy_label = Label(
-        #     text = privacy_text,
-        #     color = 'black',
-        #     markup = True,
-        #     size_hint = (1, None),
-        #     # pos_hint = {'center_x': .5}
-        # )
-        # self.privacy_label.texture_update()
-        # # print(self.privacy_label.texture_size)
-        # self.privacy_label.text_size[0] = self.scrollview.size[0]
-        # self.privacy_label.height = self.privacy_label.texture_size[1] + 1000
-        # self.scrollview.add_widget(self.privacy_label)
-
         self.grid = MDGridLayout(
             size_hint = (1, None),
             cols = 1,
-            # height = 3400 * (500 / Window.width),
             padding = 20
         )
         self.grid.bind(minimum_height = self.grid.setter('height'))
@@ -492,12 +457,8 @@ class PrivacyScreen(MDScreen):
         self.privacy_label = MDLabel(
             text = privacy_text,
             markup = True,
-            # height = 3400 * (500 / Window.width),
             size_hint = (1, None)
         )
-        # self.privacy_label.texture_update()
-        # print(f"self.privacy_label.texture_size = {self.privacy_label.texture_size}")
-        # self.privacy_label.height = self.privacy_label.texture_size[1]
         self.privacy_label.bind(texture_size = lambda instance, size: setattr(self.privacy_label, "height", size[1] + 400))
         self.grid.add_widget(self.privacy_label)
         self.scrollview.add_widget(self.grid)
@@ -574,18 +535,9 @@ class MobileApp(MDApp):
 
     def build(self):
         Window.size = (360, 800)
-        # Window.size = (600, 800)
-        
-        # cur.execute("""CREATE TABLE IF NOT EXISTS accounts(
-        #         account_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        #         username TEXT,
-        #         email TEXT,
-        #         password TEXT,
-        #         balance REAL);
-        #         """)
-        # conn.commit()
+        # Window.size = (1080, 2400)
 
-        Loader.loading_image = './assets/loading.gif'
+        # Loader.loading_image = './assets/loading.gif'
 
         self.theme_cls.material_style = "M2"
 
